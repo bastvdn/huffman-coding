@@ -2,6 +2,7 @@ import heapq
 import os
 from copy import deepcopy
 
+import time
 from termcolor import colored, cprint
 import msvcrt as m
 from pynput import mouse, keyboard
@@ -73,14 +74,17 @@ class HuffmanCoding:
         i = 0
 
         # print(colored(displayedText,'red',attrs=['reverse']))
-
+        flag_fast = False
         while i < len(text):
-            displayedText = text[i + 1:i + 30] + '...'
+            if i < len(text)-30:
+                displayedText = text[i + 1:i + 30] + '...'
+            else:
+                displayedText = text[i + 1:i + 30]
             if not text[i] in frequency:
                 frequency[text[i]] = 0
             frequency[text[i]] += 1
             # y = input("ok")
-            m.getch()
+
             os.system('cls')
 
             frequencyText = sorted(frequency.items(), key=lambda x: x[1], reverse=True)
@@ -103,8 +107,15 @@ class HuffmanCoding:
             print('{: ^100}'.format(letterValue))
             print(colored(text[i], 'red', attrs=['reverse']), end='')
             print(colored(displayedText, 'red'))
+            if not flag_fast:
+                comm = m.getch()
+            else:
+                time.sleep(0.05)
+            if comm == b'H':
+                flag_fast = True
 
             i += 1
+        input("Frequency analysis complete push any button")
         return frequency
 
     def make_heap(self, frequency):
@@ -179,18 +190,22 @@ class HuffmanCoding:
         encoded_text = ""
         for character in text:
             encoded_text += self.codes[character]
+        #print(encoded_text)
         return encoded_text
 
     def get_encoded_text_repr(self, text):
         encoded = ''
         i = 0
-
+        flag_fast = False
         # print(colored(displayedText,'red',attrs=['reverse']))
 
         while i < len(text):
-            displayedText = text[i + 1:i + 30] + '...'
+            if i < len(text)-30:
+                displayedText = text[i + 1:i + 30] + '...'
+            else:
+                displayedText = text[i + 1:i + 30]
             # y = input("ok")
-            m.getch()
+
             os.system('cls')
 
             print(colored(self.codes[text[i]], 'blue', attrs=['reverse']), end='')
@@ -199,16 +214,57 @@ class HuffmanCoding:
             print(colored(text[i], 'red', attrs=['reverse']), end='')
             print(colored(displayedText, 'red'))
 
+            if not flag_fast:
+                comm = m.getch()
+            else:
+                time.sleep(0.05)
+            if comm == b'H':
+                flag_fast = True
+
             i += 1
         return None
 
     def pad_encoded_text(self, encoded_text):
         extra_padding = 8 - len(encoded_text) % 8
+        #print(len(encoded_text) % 8)
         for i in range(extra_padding):
             encoded_text += "0"
 
         padded_info = "{0:08b}".format(extra_padding)
         encoded_text = padded_info + encoded_text
+        #print(encoded_text)
+
+        return encoded_text
+
+    def pad_encoded_text_repr(self, encoded_text):
+        os.system('cls')
+        print(colored(encoded_text, 'red'))
+        m.getch()
+        time.sleep(1)
+        os.system('cls')
+        print(colored(encoded_text, 'red'))
+
+        extra_padding = 8 - len(encoded_text) % 8
+        print(colored('Adding pad : {}'.format(extra_padding), 'blue'))
+        m.getch()
+        time.sleep(1)
+        print(colored(encoded_text, 'red'), end='')
+        print(colored('0'*extra_padding,'blue',attrs=['reverse']))
+        # print(len(encoded_text) % 8)
+        for i in range(extra_padding):
+            encoded_text += "0"
+        m.getch()
+
+        padded_info = "{0:08b}".format(extra_padding)
+        print(colored('Adding padded_info : {0:08b}'.format(extra_padding), 'blue'))
+        time.sleep(1)
+        print(colored(padded_info,'blue',attrs=['reverse']), end='')
+        print(colored(encoded_text, 'red'), end='')
+        print(colored('0' * extra_padding, 'blue'))
+        encoded_text = padded_info + encoded_text
+        m.getch()
+        os.system('cls')
+
         return encoded_text
 
     def get_byte_array(self, padded_encoded_text):
@@ -220,6 +276,7 @@ class HuffmanCoding:
         for i in range(0, len(padded_encoded_text), 8):
             byte = padded_encoded_text[i:i + 8]
             b.append(int(byte, 2))
+
         return b
 
     def compress(self):
@@ -244,7 +301,11 @@ class HuffmanCoding:
             encoded_text = self.get_encoded_text(text)
             padded_encoded_text = self.pad_encoded_text(encoded_text)
 
+            #self.pad_encoded_text_repr(encoded_text)
+
             b = self.get_byte_array(padded_encoded_text)
+
+
             output.write(bytes(b))
 
         print("Compressed")
