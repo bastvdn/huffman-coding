@@ -62,9 +62,12 @@ class HuffmanCoding:
         def other_name(self, level=0):
 
             if not self.left and not self.right:
-                print('\t' * level + repr(self.freq) + ':' +repr(self.char))
+                print('\t' * (level - 1) + '└------' + repr(self.freq) + ':' +repr(self.char))
+            elif level!= 0:
+                print('\t' * (level - 1) + '└------' + repr(self.freq))
             else:
-                print('\t' * level + repr(self.freq))
+                print(repr(self.freq))
+
             for child in (self.left,self.right):
                 if child:
                     child.other_name(level + 1)
@@ -365,7 +368,7 @@ class HuffmanCoding:
             text = text.rstrip()
 
             frequency = self.make_frequency_dict(text)
-            self.make_frequency_dict_repr(text)
+            #self.make_frequency_dict_repr(text)
             self.make_heap(frequency)
 
             self.merge_nodes()
@@ -374,15 +377,15 @@ class HuffmanCoding:
 
             self.make_codes()
 
-            self.get_encoded_text_repr(text)
+            #self.get_encoded_text_repr(text)
 
             encoded_text = self.get_encoded_text(text)
             padded_encoded_text = self.pad_encoded_text(encoded_text)
 
-            self.pad_encoded_text_repr(encoded_text)
+            #self.pad_encoded_text_repr(encoded_text)
 
             b = self.get_byte_array(padded_encoded_text)
-            self.get_byte_array_repr(padded_encoded_text)
+            #self.get_byte_array_repr(padded_encoded_text)
 
             output.write(bytes(b))
 
