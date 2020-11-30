@@ -116,6 +116,7 @@ class HuffmanCoding:
 
             i += 1
         input("Frequency analysis complete push any button")
+        os.system('cls')
         return frequency
 
     def make_heap(self, frequency):
@@ -275,7 +276,39 @@ class HuffmanCoding:
         b = bytearray()
         for i in range(0, len(padded_encoded_text), 8):
             byte = padded_encoded_text[i:i + 8]
+            # print(byte)
+            # print(int(byte, 2))
             b.append(int(byte, 2))
+
+        return b
+
+    def get_byte_array_repr(self, padded_encoded_text):
+        os.system('cls')
+        print(colored(padded_encoded_text, 'red'))
+        m.getch()
+        if (len(padded_encoded_text) % 8 != 0):
+            print("Encoded text not padded properly")
+            exit(0)
+
+        b = bytearray()
+        byteString= ''
+        for i in range(0, len(padded_encoded_text), 8):
+            os.system('cls')
+            print(colored(padded_encoded_text[:i],'red'), end='')
+            print(colored(padded_encoded_text[i:i+8],'red',attrs=['reverse']),end='')
+            print(colored(padded_encoded_text[i+8:],'red'))
+
+            print(colored(byteString, 'green'), end='')
+            byte = padded_encoded_text[i:i + 8]
+            byteString += hex(int(byte, 2))
+            print(colored(hex(int(byte, 2)), 'green', attrs=['reverse']))
+
+            #print(byte)
+            #print(int(byte, 2))
+            b.append(int(byte, 2))
+            m.getch()
+        input('ok')
+
 
         return b
 
@@ -292,6 +325,7 @@ class HuffmanCoding:
             self.make_heap(frequency)
 
             self.merge_nodes()
+
             #self.merge_nodes_repr()
 
             self.make_codes()
@@ -304,7 +338,7 @@ class HuffmanCoding:
             #self.pad_encoded_text_repr(encoded_text)
 
             b = self.get_byte_array(padded_encoded_text)
-
+            self.get_byte_array_repr(padded_encoded_text)
 
             output.write(bytes(b))
 
